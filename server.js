@@ -14,8 +14,13 @@ mongoose.connect(process.env.MONGODB_URI)
 mongoose.connection.on('connected', () => {
     console.log(`Connected to MongoDB ${mongoose.connection.name}`)
 })
-//get route to slash
-app.get('/', async (req, res) => {
+
+//Import Fruit Model
+const Fruit = require('./models/fruit.js');
+
+
+
+app.get('/', async (req, res) => {      //get route to slash
     // res.send('hello,friend') add these lines throughough out the process to check the get route
     res.render('index.ejs');
 })
