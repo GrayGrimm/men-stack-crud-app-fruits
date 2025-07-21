@@ -6,6 +6,8 @@ dotenv.config(); // Loads the environment variables from .env file
 
 const express = require('express');
 const mongoose = require('mongoose')
+const methodOverride = require('method-override')
+const morgan = require('morgan')
 
 const app = express()
 
@@ -21,6 +23,8 @@ const Fruit = require('./models/fruit.js');
 
 // Adding middleware for app
 app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method"));
+app.use(morgan("dev")); 
 
 
 app.get('/', async (req, res) => {      //get route to slash
@@ -49,6 +53,12 @@ app.post('/fruits', async (req, res) => {
         req.body.isReadyToEat = false;
     }
     await Fruit.create(req.body); //this line is the database transaction
+    res.redirect('/fruits')
+})
+
+// DELETE Route
+app.delete('/fruits/:fruitId', async (req, res) => {
+    await Fruit.findByIdAndDelete(req.params.fruitId)
     res.redirect('/fruits')
 })
 
