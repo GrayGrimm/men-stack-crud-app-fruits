@@ -13,20 +13,39 @@ mongoose.connect(process.env.MONGODB_URI)
 
 mongoose.connection.on('connected', () => {
     console.log(`Connected to MongoDB ${mongoose.connection.name}`)
-})
+});
 
-//Import Fruit Model
+
+// Import Fruit Model
 const Fruit = require('./models/fruit.js');
 
+// Adding middleware for app
+app.use(express.urlencoded({ extended: false }));
 
 
 app.get('/', async (req, res) => {      //get route to slash
     // res.send('hello,friend') add these lines throughough out the process to check the get route
     res.render('index.ejs');
 })
+app.get('/fruits', async (req, res) => {
+    const allFruits = await Fruit.find({});
+    // console.log(allFruits);
+    res.render('fruits/index.ejs', {fruits: allFruits})
+})
 
 app.get('/fruits/new',(req, res) => {
     res.render('fruits/new.ejs');
+})
+
+// POST /fruits
+app.post('/fruits', async (req, res) => {
+    if (req.body.isReadyToEat === 'on') {
+        req.body.isReadyToEat = true;
+    } else {
+        req.body.isReadyToEat = false;
+    }
+    await Fruit.create(req.body); //this line is the database transaction
+    res.redirect('/fruits')
 })
 
 app.listen(3000, () => {
