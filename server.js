@@ -24,7 +24,7 @@ const Fruit = require('./models/fruit.js');
 // Adding middleware for app
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
-app.use(morgan("dev")); 
+app.use(morgan("dev"));
 
 
 app.get('/', async (req, res) => {      //get route to slash
@@ -34,15 +34,15 @@ app.get('/', async (req, res) => {      //get route to slash
 app.get('/fruits', async (req, res) => {
     const allFruits = await Fruit.find({});
     // console.log(allFruits);
-    res.render('fruits/index.ejs', {fruits: allFruits})
+    res.render('fruits/index.ejs', { fruits: allFruits })
 })
 
-app.get('/fruits/new',(req, res) => {
+app.get('/fruits/new', (req, res) => {
     res.render('fruits/new.ejs');
 })
 app.get('/fruits/:fruitId', async (req, res) => {
     const foundFruit = await Fruit.findById(req.params.fruitId);
-    res.render('fruits/show.ejs', {fruit: foundFruit});
+    res.render('fruits/show.ejs', { fruit: foundFruit });
 })
 
 // POST /fruits
@@ -60,6 +60,13 @@ app.post('/fruits', async (req, res) => {
 app.delete('/fruits/:fruitId', async (req, res) => {
     await Fruit.findByIdAndDelete(req.params.fruitId)
     res.redirect('/fruits')
+})
+
+app.get('/fruits/:fruitId/edit', async (req, res) => {
+    const foundFruit = await Fruit.findById(req.params.fruitId);
+    res.render("fruits/edit.ejs", {
+    fruit: foundFruit,
+  });
 })
 
 app.listen(3000, () => {
